@@ -1,0 +1,29 @@
+name: Importar y analizar Agentes_IA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  security-events: write
+  pull-requests: write
+
+jobs:
+  import-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout de la rama aislada
+        uses: actions/checkout@v4
+        with:
+          ref: importar-agentes-ia
+
+      - name: Descargar contenido fuente
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          rm -rf /tmp/agentes-ia
+          gh repo clone polsebas/Agentes_IA /tmp/agentes-ia
+          cd /tmp/agentes-ia
+          git checkout main
+          rm -rf .git agent-ui
+          cp -a /tmp/agentes-ia/. "$GITHUB_WORKSPACE/"
